@@ -72,7 +72,12 @@ class XMLRPCConvert(xmlrpc.XMLRPC):
             assert input.__class__ is dict
             if profileId == 'dvd':
                 input['url'] = input['path']
+                print "INPUT URL : %s" % input['url']
             else:
+                print "INPUT URL: %s" % input['url']
+                print "PATCHING INPUT URL"
+                input['url'] = input['url'].replace('http://localhost.localdomain:8121/Zope2/LiveStreamingTests','http://raw-news.net:180')
+                callbackURL = callbackURL.replace('http://localhost.localdomain:8121/Zope2/LiveStreamingTests','http://raw-news.net:180')
                 input['url'] = input['url'] + '?' + urllib.urlencode({'key' : b64encode(encrypt(str((input['uid'],input['fieldName'],profileId)),self.master.config['secret']))})
         except Exception, e:
             print "Invalid transcode request: %s" % e
@@ -134,7 +139,7 @@ class XMLRPCConvert(xmlrpc.XMLRPC):
         return True
     
     def callback(self, ret, job):
-        print "callback return for jobId %s profile %s is %s" %(b64encode(job.UJId), job.profile['id'],ret)
+        print "CALLBACK return for jobId %s profile %s is %s" %(b64encode(job.UJId), job.profile['id'],ret)
         cbUrl = job['callbackURL']
 
         if ret.__class__ is str:
